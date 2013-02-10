@@ -1,0 +1,6 @@
+source 'http://rubygems.org'
+gem 'puppet'
+gem 'puppet-lint'
+gem 'rspec-puppet'
+gem 'fpm'
+gem 'puppetlabs_spec_helper'

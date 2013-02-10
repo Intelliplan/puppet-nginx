@@ -1,0 +1,13 @@
+server {
+  listen   <%= listen %>;
+  server_name  <% real_server_name.each do |s_n| -%><%= s_n %> <% end -%>;
+  access_log   <%= real_access_log %>;
+ 
+  location /<%= name %> {
+    root /var/www/<%= name %>/;
+    index index.html index.htm default.aspx Default.aspx;
+    fastcgi_index Default.aspx;
+    fastcgi_pass <%= fastcgi_pass %>;
+    include /etc/nginx/includes/fastcgi_params.inc;
+  }
+}

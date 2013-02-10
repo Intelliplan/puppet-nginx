@@ -1,0 +1,47 @@
+location @drupal {
+        #rewrite ^ /index.php?q=$uri last;
+        # The above breaks /fr, as it rewrites it to index.php?q=/fr . the leading slash shouldn't be there
+        rewrite /(.+)/$ /index.php?q=$1 last;
+        rewrite ^/(.+)$ /index.php?q=$1 last;
+}
+
+error_page      403 http://$host;
+error_page      500 502 503 504 /50x.html;
+location = /50x.html {
+        root    /usr/share/nginx/html;
+}
+
+location / {
+index   index.php index.html;
+        try_files $uri $uri/ @drupal;
+}
+
+# serve static files directly
+location ~* ^.+\.(html|jpg|jpeg|gif|png|ico|ppt|doc|docx|bmp|exe|xls|xlsx|zip|gz)$ {
+        access_log              off;
+        expires                 30d;
+        try_files $uri $uri/ @drupal;
+}
+# these files can be generated up to a few times a day so use a lower expire time
+location ~* ^.+\.(xml|css|js|pdf|csv)$ {
+        expires                 12h;
+        try_files $uri $uri/ @drupal;
+}
+
+location ~* ^.+\.(module|install|info|inc)$ {
+        deny all;
+}
+
+location ~* ^/(cron|update)\.php {
+        include <%= scope.lookupvar('nginx::params::nginx_sites_enabled')%>/<%= name %>.d/fastcgi.inc;
+        fastcgi_read_timeout 300;
+}
+
+location ~* ^/(admin|user).*$ {
+        try_files $uri $uri/ @drupal;
+}
+
+location ~ \.php$ {
+        include <%= scope.lookupvar('nginx::params::nginx_sites_enabled')%>/<%= name %>.d/fastcgi.inc;
+        fastcgi_read_timeout 120;
+}

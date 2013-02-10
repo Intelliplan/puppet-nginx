@@ -1,0 +1,8 @@
+server {
+  listen <%= scope.lookupvar('port') %>;
+  server_name <%= server_name %>;
+  <% if @root
+    puts "root #{scope.lookupvar('root')}"
+  end %>
+  include <%= scope.lookupvar('sites_enabled')%>/<%= scope.lookupvar('name') %>/*.conf;
+}
