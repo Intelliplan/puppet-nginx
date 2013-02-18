@@ -3,10 +3,8 @@ define nginx::site::location(
   $location         = undef,
   $site             = undef,
   $location_options = undef,
-  $sites_enabled    = hiera('sites_enabled')
+  $sites_enabled    = hiera('sites_enabled', $nginx::params::sites_enabled)
 ) {
-  include nginx::params
-
   if ! $site {
     fail("Nginx::Site::Location[site]:
       parameter must be defined")

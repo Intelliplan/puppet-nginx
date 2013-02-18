@@ -4,9 +4,9 @@
 # This definition is private, not intended to be instantiated directly
 #
 define nginx::install_site(
-  $sites_available = hiera('sites_available'),
-  $sites_enabled   = hiera('sites_enabled'),
-  $group           = hiera('group'),
+  $sites_available = hiera('sites_available', $nginx::params::sites_available),
+  $sites_enabled   = hiera('sites_enabled', $nginx::params::sites_enabled),
+  $group           = hiera('group', $nginx::params::group),
   $content         = undef,
   $source          = undef,
   $root            = undef,
@@ -32,7 +32,7 @@ define nginx::install_site(
             mode    => '0644',
             owner   => 'root',
             group   => 'root',
-            alias   => "sites-$name",
+            alias   => "sites-${name}",
             source => $source,
             require => Package['nginx'],
             notify  => Service['nginx'],
@@ -46,7 +46,7 @@ define nginx::install_site(
         mode    => '0644',
         owner   => 'root',
         group   => 'root',
-        alias   => "sites-$name",
+        alias   => "sites-${name}",
         content => $content,
         require => Package['nginx'],
         notify  => Service['nginx'],
@@ -54,10 +54,9 @@ define nginx::install_site(
     }
   }
   # now, enable it.
-  exec { "ln -s ${sites_available}/${name} ${sites_enabled}/${name}":
-    unless  => "/bin/sh -c '[ -L /${sites_enabled}/${name} ] && \
-      [ ${sites_enabled}/${name} -ef ${sites_available}/${name} ]'",
-    path    => ['/usr/bin/', '/bin/'],
+  file { "${sites_enabled}/${name}":
+    ensure => link,
+    target => "${sites_available}/${name}",
     notify  => Service['nginx'],
     require => File["sites-${name}"],
   }

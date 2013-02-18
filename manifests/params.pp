@@ -13,7 +13,7 @@ class nginx::params {
 
   $includes_dir = "${etc_dir}/includes"
   $proxy_params = "${includes_dir}/proxy_params"
-  $conf = '${etc_dir}/conf.d'
-  $sites_enabled = '${etc_dir}/sites-enabled'
-  $sites_available = '${etc_dir}/sites-available'
+  $conf = "${etc_dir}/conf.d"
+  $sites_enabled = "${etc_dir}/sites-enabled"
+  $sites_available = "${etc_dir}/sites-available"
 }
