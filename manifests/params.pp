@@ -9,7 +9,7 @@ class nginx::params {
   $etc_dir = '/etc/nginx'
   $data_dir = '/var/www'
   $log_dir  = '/var/log/nginx'
-  $pid_dir  = '/var/run/nginx.pid'
+  $pid_file  = '/var/run/nginx.pid'
 
   $includes_dir = "${etc_dir}/includes"
   $proxy_params = "${includes_dir}/proxy_params"

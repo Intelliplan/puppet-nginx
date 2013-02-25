@@ -2,7 +2,7 @@ user <%= scope.lookupvar('user') %>;
 worker_processes  <%= scope.lookupvar('worker_processes')  %>;
 
 error_log  <%= scope.lookupvar('log_dir') %>/error.log;
-pid        <%= scope.lookupvar('pid_dir') %>/nginx.pid;
+pid        <%= scope.lookupvar('pid_file') %>;
 
 events {
     worker_connections  <%= scope.lookupvar('worker_connections')  %>;
