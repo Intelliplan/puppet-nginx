@@ -9,7 +9,10 @@ define nginx::install_site(
   $group           = hiera('group', $nginx::params::group),
   $content         = undef,
   $source          = undef,
+  $listen          = undef,
+  $server_name     = undef,
   $root            = undef,
+  $locations       = undef,
 ) {
   # first, make sure the site config exists
   case $content {
@@ -21,6 +24,7 @@ define nginx::install_site(
             mode    => '0644',
             owner   => 'root',
             group   => 'root',
+            content => template('nginx/site.erb'),
             alias   => "sites-${name}",
             notify  => Service['nginx'],
             require => Package['nginx'],

@@ -29,7 +29,8 @@ define nginx::site(
   $ssl_certificate     = undef,
   $ssl_certificate_key = undef,
   $ssl_session_timeout = '5m',
-  $log_dir     = hiera('log_dir', $nginx::params::log_dir)
+  $log_dir     = hiera('log_dir', $nginx::params::log_dir),
+  $locations  = []
 ) {
 
   case $ensure {
@@ -37,7 +38,10 @@ define nginx::site(
        nginx::install_site { $name:
          content => $content,
          source  => $source,
-         root    => $root
+         listen  => $listen,
+         server_name => $server_name,
+         root    => $root,
+         locations => $locations
        }
     }
     'absent' : {

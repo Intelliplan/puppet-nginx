@@ -1,8 +1,15 @@
 server {
-  listen <%= scope.lookupvar('port') %>;
-  server_name <%= server_name %>;
-  <% if @root
-    puts "root #{scope.lookupvar('root')}"
-  end %>
-  include <%= scope.lookupvar('sites_enabled')%>/<%= scope.lookupvar('name') %>/*.conf;
+  listen <%= listen %>;
+  <% if server_name %>server_name <%= server_name %>;<% end %>
+  <% if root %>root <%= root %>;<% end %>
+
+  <% locations.each do |location| %>
+    <% location.each do |name,options| %>
+      location <%= name %> {
+        <% options.each do |option,value| %>
+          <%= option %> <%= value %>;
+        <% end %>
+      }
+    <% end %>
+  <% end %>
 }
