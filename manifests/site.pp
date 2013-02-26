@@ -29,26 +29,10 @@ define nginx::site(
   $ssl_certificate     = undef,
   $ssl_certificate_key = undef,
   $ssl_session_timeout = '5m',
+  $etc_dir     = hiera('etc_dir', $nginx::params::etc_dir),
   $log_dir     = hiera('log_dir', $nginx::params::log_dir),
   $locations  = []
 ) {
-
-  case $ensure {
-    'present' : {
-       nginx::install_site { $name:
-         content => $content,
-         source  => $source,
-         listen  => $listen,
-         server_name => $server_name,
-         root    => $root,
-         locations => $locations
-       }
-    }
-    'absent' : {
-       nginx::disable_site { $name: }
-   }
-    default: { err ("Unknown ensure value: '$ensure'") }
-  }
 
   $real_server_name = $server_name ? {
     undef   => $name,
@@ -60,18 +44,50 @@ define nginx::site(
     default => $access_log,
   }
 
-  # Autogenerating ssl certs
-  if $listen == '443' and  $ensure == 'present' and ($ssl_certificate == undef or $ssl_certificate_key == undef) {
-    nginx::create_ssl_cert { $name: }
-
-    $real_ssl_certificate = $ssl_certificate ? {
-      undef   => "/etc/nginx/ssl/${name}.pem",
-      default => $ssl_certificate,
+  if $listen == '443' and  $ensure == 'present'{
+    $ssl_certificate_name = "${etc_dir}/ssl/${name}.pem"
+    $ssl_certificate_key_name = "${etc_dir}/ssl/${name}.key"
+    # Autogenerating ssl certs
+    if ($ssl_certificate == undef or $ssl_certificate_key == undef) {
+      nginx::create_ssl_cert { $name: }
     }
-  
-    $real_ssl_certificate_key = $ssl_certificate_key ? {
-      undef   => "/etc/nginx/ssl/${name}.key",
-      default => $ssl_certificate_key,
+    else {
+      file { $ssl_certificate_name:
+        ensure => file,
+        owner => 'root',
+        group => 'root',
+        mode => '0644',
+        source => $ssl_certificate
+      }
+      file { $ssl_certificate_key_name:
+        ensure => file,
+        owner => 'root',
+        group => 'root',
+        mode => '0644',
+        source => $ssl_certificate_key
+
+      }
     }
   }
+  
+  case $ensure {
+    'present' : {
+       nginx::install_site { $name:
+         content => $content,
+         source  => $source,
+         listen  => $listen,
+         server_name => $real_server_name,
+         ssl_certificate => $ssl_certificate_name,
+         ssl_certificate_key => $ssl_certificate_key_name,
+         ssl_session_timeout => $ssl_session_timeout,
+         root    => $root,
+         locations => $locations
+       }
+    }
+    'absent' : {
+       nginx::disable_site { $name: }
+   }
+    default: { err ("Unknown ensure value: '$ensure'") }
+  }
+
 }

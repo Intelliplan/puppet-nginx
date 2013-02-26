@@ -11,6 +11,9 @@ define nginx::install_site(
   $source          = undef,
   $listen          = undef,
   $server_name     = undef,
+  $ssl_certificate = undef,
+  $ssl_certificate_key = undef,
+  $ssl_session_timeout = undef,
   $root            = undef,
   $locations       = undef,
 ) {
@@ -19,7 +22,7 @@ define nginx::install_site(
     undef: {
       case $source {
         undef: {
-          file { "${sites_available}/${name}":
+          file { "${sites_available}/${name}.conf":
             ensure  => present,
             mode    => '0644',
             owner   => 'root',
@@ -31,7 +34,7 @@ define nginx::install_site(
           }
         }
         default: {
-          file { "${sites_available}/${name}":
+          file { "${sites_available}/${name}.conf":
             ensure  => present,
             mode    => '0644',
             owner   => 'root',
@@ -45,7 +48,7 @@ define nginx::install_site(
       }
     }
     default: {
-      file { "${sites_available}/${name}":
+      file { "${sites_available}/${name}.conf":
         ensure  => present,
         mode    => '0644',
         owner   => 'root',
@@ -58,9 +61,9 @@ define nginx::install_site(
     }
   }
   # now, enable it.
-  file { "${sites_enabled}/${name}":
+  file { "${sites_enabled}/${name}.conf":
     ensure => link,
-    target => "${sites_available}/${name}",
+    target => "${sites_available}/${name}.conf",
     notify  => Service['nginx'],
     require => File["sites-${name}"],
   }
