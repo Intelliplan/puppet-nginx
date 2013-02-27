@@ -6,7 +6,6 @@ pid        <%= scope.lookupvar('pid_file') %>;
 
 events {
     worker_connections  <%= scope.lookupvar('worker_connections')  %>;
-    # multi_accept on;
 }
 
 http {
@@ -18,12 +17,9 @@ http {
     access_log	<%= scope.lookupvar('log_dir') %>/access.log remote buffer=32k;
 
     sendfile        on;
-    #tcp_nopush     on;
-
-    #keepalive_timeout  0;
     keepalive_timeout  65;
     tcp_nodelay        on;
-
+    
     gzip  on;
     gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
