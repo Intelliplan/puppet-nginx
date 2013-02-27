@@ -6,6 +6,7 @@
 define nginx::install_site(
   $sites_available = hiera('sites_available', $nginx::params::sites_available),
   $sites_enabled   = hiera('sites_enabled', $nginx::params::sites_enabled),
+  $user            = hiera('user', $nginx::params::user),
   $group           = hiera('group', $nginx::params::group),
   $content         = undef,
   $source          = undef,
@@ -71,8 +72,8 @@ define nginx::install_site(
     # ensure mkdir $root
     file { $root:
       ensure  => directory,
-      mode    => '0750',
-      owner   => 'root',
+      mode    => '0755',
+      owner   => $user,
       group   => $group,
       require => Package['nginx'],
        notify  => Service['nginx'],

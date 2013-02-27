@@ -28,15 +28,28 @@ class nginx(
   $sites_available    = hiera('sites_available', $nginx::params::sites_available)
 ) inherits nginx::params {
 
-  if ! defined(Package['nginx']) { package { 'nginx': ensure => installed }}
+  anchor { 'nginx::start': }
+  anchor { 'nginx::end': }
+  
+  if ! defined(Package['nginx']) { 
+    package { 'nginx': 
+      ensure => installed,
+      require => Anchor['nginx::start'],
+      before => Anchor['nginx::end'],
+    }
+  }
 
   #restart-command is a quick-fix here, until http://projects.puppetlabs.com/issues/1014 is solved
   service { 'nginx':
     ensure     => running,
     enable     => true,
     hasrestart => true,
-    require    => File["${etc_dir}/nginx.conf"],
-    restart    => '/etc/init.d/nginx reload'
+    require    => [
+      Anchor['nginx::start'],
+      File["${etc_dir}/nginx.conf"],
+    ],
+    restart    => '/etc/init.d/nginx reload',
+    before => Anchor['nginx::end'],
   }
   file {
     "${etc_dir}/nginx.conf":
@@ -46,35 +59,52 @@ class nginx(
       group   => 'root',
       content => template('nginx/nginx.conf.erb'),
       notify  => Service['nginx'],
-      require => Package['nginx'],
-  }
-  file {
+      require => [
+        Package['nginx'],
+        Anchor['nginx::start'],
+      ],
+      before => Anchor['nginx::end'];
+
     $conf:
       ensure  => directory,
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
-      require => Package['nginx'],
-  }
-  file {
+      require => [
+        Package['nginx'],
+        Anchor['nginx::start'],
+      ],
+      before => Anchor['nginx::end'];
+
     "${etc_dir}/ssl":
       ensure  => directory,
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
-      require => Package['nginx'];
+      require => [
+        Package['nginx'],
+        Anchor['nginx::start'],
+      ],
+      before => Anchor['nginx::end'];
 
     $includes_dir:
       ensure  => directory,
       mode    => '0644',
       owner   => 'root',
       group   => 'root',
-      require => Package['nginx'];
-  }
-  file {
+      require => [
+        Package['nginx'],
+        Anchor['nginx::start'],
+      ],
+      before => Anchor['nginx::end'];
+
     "${etc_dir}/fastcgi_params":
       ensure  => absent,
-      require => Package['nginx'];
+      require => [
+        Package['nginx'],
+        Anchor['nginx::start'],
+      ],
+      before => Anchor['nginx::end'];
 
     $proxy_params:
       ensure  => present,
@@ -83,21 +113,32 @@ class nginx(
       group   => 'root',
       content => template('nginx/includes/proxy_params'),
       notify  => Service['nginx'],
-      require => Package['nginx'];
+      require => [
+        Package['nginx'],
+        Anchor['nginx::start'],
+      ],
+      before => Anchor['nginx::end'];
 
     $data_dir:
       ensure  => directory,
       mode    => '0755',
-      owner   => 'root',
+      owner   => $user,
       group   => $group,
-      require => Package['nginx'];
-  }
-  file {    
+      require => [
+        Package['nginx'],
+        Anchor['nginx::start'],
+      ],
+      before => Anchor['nginx::end'];
+
     [ $sites_available , $sites_enabled ]:
       ensure => directory,
       mode => '0755',
       owner => 'root',
       group => 'root',
-      require => Package['nginx'];
+      require => [
+        Package['nginx'],
+        Anchor['nginx::start'],
+      ],
+      before => Anchor['nginx::end'];
   } # end litany of file resources
 } # end init.pp

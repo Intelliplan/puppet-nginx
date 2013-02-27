@@ -20,6 +20,8 @@ define nginx::site(
   $content     = undef,
   $source      = undef,
   $root        = undef,
+  $user        = hiera('user', $nginx::params::user),
+  $group       = hiera('group', $nginx::params::group),
   $ensure      = 'present',
   $index       = 'index.html',
   $include     = '',
@@ -81,6 +83,7 @@ define nginx::site(
          ssl_certificate_key => $ssl_certificate_key_name,
          ssl_session_timeout => $ssl_session_timeout,
          root    => $root,
+         user    => $user,
          locations => $locations
        }
     }
