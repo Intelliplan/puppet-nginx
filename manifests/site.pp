@@ -84,6 +84,7 @@ define nginx::site(
          ssl_session_timeout => $ssl_session_timeout,
          root    => $root,
          user    => $user,
+         group   => $group, 
          locations => $locations
        }
     }

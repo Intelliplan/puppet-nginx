@@ -72,7 +72,7 @@ define nginx::install_site(
     # ensure mkdir $root
     file { $root:
       ensure  => directory,
-      mode    => '0755',
+      mode    => '2755',
       owner   => $user,
       group   => $group,
       require => Package['nginx'],
