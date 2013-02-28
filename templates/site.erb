@@ -1,27 +1,38 @@
 server {
+<% if @listen.respond_to?(:each)
+     @listen.each do |port|
+       if port == '443' -%>
+  listen <%= port %> default ssl;
+<%     else %>
+  listen <%= port %>;
+<%     end
+     end
+   else -%>
   listen <%= listen %>;
-  <% if server_name %>server_name <%= server_name %>;<% end %>
-  <% if root %>root <%= root %>;<% end %>
+<% end -%>
 
-  <% if listen == '443' %>
-    ssl on;
-    ssl_certificate  <%= ssl_certificate %>;
-    ssl_certificate_key  <%= ssl_certificate_key %>;
+<% if @server_name -%>
+  server_name <%= @server_name %>;
+<% end -%>
 
-    ssl_session_timeout  <%= ssl_session_timeout %>;
-
-    ssl_protocols  SSLv2 SSLv3 TLSv1;
-    ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
-    ssl_prefer_server_ciphers   on;
-  <% end -%>
-
-  <% locations.each do |location| %>
-    <% location.each do |name,options| %>
-      location <%= name %> {
-        <% options.each do |option,value| %>
-          <%= option %> <%= value %>;
-        <% end %>
-      }
-    <% end %>
-  <% end %>
+<% if @root -%>
+  root <%= @root %>;
+<% end -%>
+<% if @listen.include? '443' -%>
+  ssl_certificate  <%= @ssl_certificate %>;
+  ssl_certificate_key  <%= @ssl_certificate_key %>;
+  ssl_session_timeout  <%= @ssl_session_timeout %>;
+  ssl_protocols  SSLv2 SSLv3 TLSv1;
+  ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
+  ssl_prefer_server_ciphers   on;
+<% end %>
+<%- @locations.each do |location|
+     location.each do |name,options| -%>
+  location <%= name %> {
+<%-   options.each do |option,value| -%>
+    <%= option %> <%= value %>;
+<%    end -%>
+  }
+<% end
+end -%>
 }
