@@ -22,6 +22,7 @@ class nginx(
   $includes_dir       = hiera('includes_dir', $nginx::params::includes_dir),
   $conf               = hiera('conf', $nginx::params::conf),
   $etc_dir            = hiera('etc_dir', $nginx::params::etc_dir),
+  $log_dir            = hiera('log_dir', $nginx::params::log_dir),
   $proxy_params       = hiera('proxy_params', $nginx::params::proxy_params),
   $data_dir           = hiera('data_dir', $nginx::params::data_dir),
   $sites_enabled      = hiera('sites_enabled', $nginx::params::sites_enabled),
@@ -49,7 +50,7 @@ class nginx(
       File["${etc_dir}/nginx.conf"],
     ],
     restart    => '/etc/init.d/nginx reload',
-    before => Anchor['nginx::end'],
+    before     => Anchor['nginx::end'],
   }
   file {
     "${etc_dir}/nginx.conf":
@@ -129,6 +130,17 @@ class nginx(
         Anchor['nginx::start'],
       ],
       before => Anchor['nginx::end'];
+
+    $log_dir: 
+      ensure  => directory,
+      mode    => '0750',
+      owner   => 'root',
+      group   => 'root',
+      require => [
+        Package['nginx'],
+        Anchor['nginx::start']
+      ],
+      before  => Anchor['nginx::end'];
 
     [ $sites_available , $sites_enabled ]:
       ensure => directory,

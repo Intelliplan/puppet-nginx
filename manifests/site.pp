@@ -67,8 +67,9 @@ define nginx::site(
         group => 'root',
         mode => '0644',
         source => $ssl_certificate_key
-
       }
+      Service['nginx'] <~ File[$ssl_certificate_name]
+      Service['nginx'] <~ File[$ssl_certificate_key_name]
     }
   }
   
