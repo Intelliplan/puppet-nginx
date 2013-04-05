@@ -15,26 +15,23 @@
 # * ssl_certificate : ssl_certificate path. If empty auto-generating ssl cert
 # * ssl_certificate_key : ssl_certificate_key path. If empty auto-generating ssl cert key
 #   See http://wiki.nginx.org for details.
-##
+#
 define nginx::site(
-  $content     = undef,
-  $source      = undef,
-  $root        = undef,
-  $user        = hiera('user', $nginx::params::user),
-  $group       = hiera('group', $nginx::params::group),
-  $ensure      = 'present',
-  $index       = 'index.html',
-  $include     = '',
-  $listen      = '80',
-  $server_name = undef,
-  $access_log  = undef,
+  $content             = undef,
+  $source              = undef,
+  $root                = undef,
+  $ensure              = 'present',
+  $include             = '',
+  $listen              = '80',
+  $server_name         = undef,
+  $access_log          = undef,
   $ssl_certificate     = undef,
   $ssl_certificate_key = undef,
   $ssl_session_timeout = '5m',
-  $etc_dir     = hiera('etc_dir', $nginx::params::etc_dir),
-  $log_dir     = hiera('log_dir', $nginx::params::log_dir),
   $locations  = []
 ) {
+  $etc_dir = $nginx::etc_dir
+  $log_dir = $nginx::log_dir
 
   $real_server_name = $server_name ? {
     undef   => $name,
@@ -51,7 +48,9 @@ define nginx::site(
     $ssl_certificate_key_name = "${etc_dir}/ssl/${name}.key"
     # Autogenerating ssl certs
     if ($ssl_certificate == undef or $ssl_certificate_key == undef) {
-      nginx::create_ssl_cert { $name: }
+      nginx::create_ssl_cert { $name:
+        server_name => $real_server_name,
+      }
     }
     else {
       file { $ssl_certificate_name:
@@ -59,20 +58,20 @@ define nginx::site(
         owner => 'root',
         group => 'root',
         mode => '0644',
-        source => $ssl_certificate
+        source => $ssl_certificate,
       }
       file { $ssl_certificate_key_name:
         ensure => file,
         owner => 'root',
         group => 'root',
         mode => '0644',
-        source => $ssl_certificate_key
+        source => $ssl_certificate_key,
       }
       Service['nginx'] <~ File[$ssl_certificate_name]
       Service['nginx'] <~ File[$ssl_certificate_key_name]
     }
   }
-  
+
   case $ensure {
     'present' : {
        nginx::install_site { $name:
@@ -84,15 +83,12 @@ define nginx::site(
          ssl_certificate_key => $ssl_certificate_key_name,
          ssl_session_timeout => $ssl_session_timeout,
          root    => $root,
-         user    => $user,
-         group   => $group, 
-         locations => $locations
+         locations => $locations,
        }
     }
     'absent' : {
        nginx::disable_site { $name: }
-   }
+    }
     default: { err ("Unknown ensure value: '$ensure'") }
   }
-
 }

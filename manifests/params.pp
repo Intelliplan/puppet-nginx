@@ -1,7 +1,7 @@
 class nginx::params {
 
-  $user = 'www-data'
-  $group = 'root'
+  $user = 'nginx'
+  $group = 'nginx'
 
   $worker_processes = '1'
   $worker_connections = '1024'

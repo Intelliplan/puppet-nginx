@@ -4,10 +4,8 @@
 # This definition is private, not intended to be instantiated directly
 #
 define nginx::install_site(
-  $sites_available = hiera('sites_available', $nginx::params::sites_available),
-  $sites_enabled   = hiera('sites_enabled', $nginx::params::sites_enabled),
-  $user            = hiera('user', $nginx::params::user),
-  $group           = hiera('group', $nginx::params::group),
+  $sites_available = $nginx::params::sites_available,
+  $sites_enabled   = $nginx::params::sites_enabled,
   $content         = undef,
   $source          = undef,
   $listen          = undef,
@@ -18,6 +16,9 @@ define nginx::install_site(
   $root            = undef,
   $locations       = undef,
 ) {
+  $user = $nginx::user
+  $group = $nginx::group
+
   # first, make sure the site config exists
   case $content {
     undef: {
@@ -76,7 +77,7 @@ define nginx::install_site(
       owner   => $user,
       group   => $group,
       require => Package['nginx'],
-       notify  => Service['nginx'],
+      notify  => Service['nginx'],
     } # end file   
   } # end conditional
 }  # end nginx::install_site()
