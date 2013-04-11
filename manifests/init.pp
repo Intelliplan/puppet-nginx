@@ -84,10 +84,7 @@ class nginx(
       before => Anchor['nginx::end'];
 
     $conf:
-      ensure  => directory,
-      mode    => '0644',
-      owner   => 'root',
-      group   => 'root',
+      ensure  => absent,
       require => [
         Package['nginx'],
         Anchor['nginx::start'],

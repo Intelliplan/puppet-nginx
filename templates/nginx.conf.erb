@@ -23,7 +23,6 @@ http {
     gzip  on;
     gzip_disable "MSIE [1-6]\.(?!.*SV1)";
 
-    include <%= scope.lookupvar('conf') %>/*.conf;
     include <%= scope.lookupvar('sites_enabled') %>/*.conf;
 
     server_tokens off;
