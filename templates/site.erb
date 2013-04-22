@@ -1,3 +1,5 @@
+# puppet-managed file, will be regenerated every puppet run
+
 server {
 <% if @listen.respond_to?(:each)
      @listen.each do |port|
@@ -10,11 +12,9 @@ server {
    else -%>
   listen <%= listen %>;
 <% end -%>
-
 <% if @server_name -%>
   server_name <%= @server_name %>;
 <% end -%>
-
 <% if @root -%>
   root <%= @root %>;
 <% end -%>
@@ -25,11 +25,15 @@ server {
   ssl_protocols  SSLv2 SSLv3 TLSv1;
   ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
   ssl_prefer_server_ciphers   on;
-<% end %>
+<% end -%>
+
+    # @location is an array with a single item; a hash; with a key for
+    # each option key.
+
 <%- @locations.each do |location|
-     location.each do |name,options| -%>
+     location.sort.each do |name,options| -%>
   location <%= name %> {
-<%-   options.each do |option,value| -%>
+<%-   options.sort.each do |option,value| -%>
     <%= option %> <%= value %>;
 <%    end -%>
   }
