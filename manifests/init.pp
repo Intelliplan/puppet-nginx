@@ -85,6 +85,7 @@ class nginx(
 
     $conf:
       ensure  => absent,
+      force   => true,
       require => [
         Package['nginx'],
         Anchor['nginx::start'],
