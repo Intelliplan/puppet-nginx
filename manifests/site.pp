@@ -55,18 +55,19 @@ define nginx::site(
     else {
       file { $ssl_certificate_name:
         ensure => file,
-        owner => 'root',
-        group => 'root',
-        mode => '0644',
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0644',
         source => $ssl_certificate,
       }
       file { $ssl_certificate_key_name:
         ensure => file,
-        owner => 'root',
-        group => 'root',
-        mode => '0644',
+        owner  => 'root',
+        group  => 'root',
+        mode   => '0644',
         source => $ssl_certificate_key,
       }
+
       Service['nginx'] <~ File[$ssl_certificate_name]
       Service['nginx'] <~ File[$ssl_certificate_key_name]
     }
@@ -74,20 +75,20 @@ define nginx::site(
 
   case $ensure {
     'present' : {
-       nginx::install_site { $name:
-         content => $content,
-         source  => $source,
-         listen  => $listen,
-         server_name => $real_server_name,
-         ssl_certificate => $ssl_certificate_name,
-         ssl_certificate_key => $ssl_certificate_key_name,
-         ssl_session_timeout => $ssl_session_timeout,
-         root    => $root,
-         locations => $locations,
-       }
+      nginx::install_site { $name:
+        content             => $content,
+        source              => $source,
+        listen              => $listen,
+        server_name         => $real_server_name,
+        ssl_certificate     => $ssl_certificate_name,
+        ssl_certificate_key => $ssl_certificate_key_name,
+        ssl_session_timeout => $ssl_session_timeout,
+        root                => $root,
+        locations           => $locations,
+      }
     }
     'absent' : {
-       nginx::disable_site { $name: }
+      nginx::disable_site { $name: }
     }
     default: { err ("Unknown ensure value: '$ensure'") }
   }

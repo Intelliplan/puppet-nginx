@@ -32,27 +32,25 @@ class nginx(
   anchor { 'nginx::start': }
   anchor { 'nginx::end': }
 
-  if ! defined(Package['nginx']) { 
-    package { 'nginx': 
-      ensure => installed,
-      require => Anchor['nginx::start'],
-      before => Anchor['nginx::end'],
-    }
+  package { 'nginx': 
+    ensure  => latest, # http://nginx.org/en/security_advisories.html
+    require => Anchor['nginx::start'],
+    before  => Anchor['nginx::end'],
   }
 
   group { $group:
-    ensure => present,
-    system => true,
+    ensure  => present,
+    system  => true,
     require => Anchor['nginx::start'],
     before  => Anchor['nginx::end'],
   }
 
   user { $user:
-    ensure => present,
-    gid    => $group,
-    system => true,
-    home   => $data_dir,
-    shell  => '/sbin/nologin',
+    ensure  => present,
+    gid     => $group,
+    system  => true,
+    home    => $data_dir,
+    shell   => '/sbin/nologin',
     require => Group[$group],
   }
 
@@ -137,7 +135,7 @@ class nginx(
 
     $data_dir:
       ensure  => directory,
-      mode    => '0755',
+      mode    => '0644',
       owner   => $user,
       group   => $group,
       require => [
@@ -148,7 +146,7 @@ class nginx(
 
     $log_dir: 
       ensure  => directory,
-      mode    => '0750',
+      mode    => '0640',
       owner   => 'root',
       group   => 'root',
       require => [
@@ -159,7 +157,7 @@ class nginx(
 
     [ $sites_available , $sites_enabled ]:
       ensure => directory,
-      mode => '0755',
+      mode => '0644',
       owner => 'root',
       group => 'root',
       require => [

@@ -32,7 +32,6 @@ define nginx::install_site(
             content => template('nginx/site.erb'),
             alias   => "sites-${name}",
             notify  => Service['nginx'],
-            require => Package['nginx'],
           }
         }
         default: {
@@ -42,8 +41,7 @@ define nginx::install_site(
             owner   => 'root',
             group   => 'root',
             alias   => "sites-${name}",
-            source => $source,
-            require => Package['nginx'],
+            source  => $source,
             notify  => Service['nginx'],
           }
         }
@@ -57,7 +55,6 @@ define nginx::install_site(
         group   => 'root',
         alias   => "sites-${name}",
         content => $content,
-        require => Package['nginx'],
         notify  => Service['nginx'],
       }
     }
@@ -69,14 +66,14 @@ define nginx::install_site(
     notify  => Service['nginx'],
     require => File["sites-${name}"],
   }
+
   if $root != undef {
     # ensure mkdir $root
     file { $root:
       ensure  => directory,
-      mode    => '0755',
+      mode    => '0644',
       owner   => $user,
       group   => $group,
-      require => Package['nginx'],
       notify  => Service['nginx'],
     } # end file   
   } # end conditional
