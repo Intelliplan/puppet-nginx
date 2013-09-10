@@ -3,14 +3,14 @@
 server {
 <% if @listen.respond_to?(:each)
      @listen.each do |port|
-       if port == '443' -%>
-  listen <%= port %> default ssl;
+       if @port == '443' -%>
+  listen <%= @port %> default ssl;
 <%     else %>
-  listen <%= port %>;
+  listen <%= @port %>;
 <%     end
      end
    else -%>
-  listen <%= listen %>;
+  listen <%= @listen %>;
 <% end -%>
 <% if @server_name -%>
   server_name <%= @server_name %>;
