@@ -33,9 +33,15 @@ server {
 <%- @locations.each do |location|
      location.sort.each do |name,options| -%>
   location <%= name %> {
-<%-   options.sort.each do |option,value| -%>
+  <%- options.sort.each do |option,value| -%>
+    <%- if value.respond_to?(:each)
+          value.each do |additional_value| -%>
+    <%= option %> <%= additional_value %>;
+<%        end
+        else -%>
     <%= option %> <%= value %>;
-<%    end -%>
+<%      end -%>
+<%  end -%>
   }
 <% end
 end -%>
