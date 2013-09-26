@@ -22,9 +22,9 @@ server {
   ssl_certificate  <%= @ssl_certificate %>;
   ssl_certificate_key  <%= @ssl_certificate_key %>;
   ssl_session_timeout  <%= @ssl_session_timeout %>;
-  ssl_protocols  SSLv2 SSLv3 TLSv1;
-  ssl_ciphers  ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP;
-  ssl_prefer_server_ciphers   on;
+  ssl_prefer_server_ciphers On;
+  ssl_protocols SSLv3 TLSv1 TLSv1.1 TLSv1.2;
+  ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AES:RSA+3DES:!ADH:!AECDH:!MD5:!DSS;
 <% end -%>
 
     # @location is an array with a single item; a hash; with a key for
