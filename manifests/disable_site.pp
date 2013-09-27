@@ -5,11 +5,14 @@
 #
 define nginx::disable_site {
 
-  exec { "/bin/rm -f /etc/nginx/sites-enabled/${name}":
-    onlyif  => "/bin/sh -c '[ -L /etc/nginx/sites-enabled/${name} ] && \
-      [ /etc/nginx/sites-enabled/$name -ef /etc/nginx/sites-available/${name} ]'",
-    notify  => Service['nginx'],
-    require => Package['nginx'],
+  file {
+    "/etc/nginx/sites-enabled/${name}.conf":
+      ensure => absent,
+      notify  => Service['nginx'],
+      require => Package['nginx'];
+    "/etc/nginx/sites-available/${name}.conf":
+      ensure  => absent,
+      require => File["/etc/nginx/sites-enabled/${name}.conf"];
   }
 
 } # end nginx::remove_site() 
