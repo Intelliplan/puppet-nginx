@@ -28,7 +28,8 @@ define nginx::site(
   $ssl_certificate     = undef,
   $ssl_certificate_key = undef,
   $ssl_session_timeout = '5m',
-  $locations  = []
+  $locations           = [],
+  $return              = undef,
 ) {
   $etc_dir = $nginx::etc_dir
   $log_dir = $nginx::log_dir
