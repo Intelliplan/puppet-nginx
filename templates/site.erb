@@ -2,13 +2,9 @@
 
 server {
 <% if @listen.respond_to?(:each)
-     @listen.each do |port|
-       if port == '443' -%>
-  listen <%= port %> default ssl;
-<%     else %>
+     @listen.each do |port| -%>
   listen <%= port %>;
-<%     end
-     end
+<%   end
    else -%>
   listen <%= @listen %>;
 <% end -%>
@@ -18,10 +14,10 @@ server {
 <% if @root -%>
   root <%= @root %>;
 <% end -%>
-<% if @listen.include? '443' -%>
 <% if @return -%>
   return <%= @return %>;
 <% end -%>
+<% if (@listen.respond_to?(:any) && @listen.any?{|port|port.include?('ssl')}) || @listen.include?('ssl') -%>
   ssl_certificate  <%= @ssl_certificate %>;
   ssl_certificate_key  <%= @ssl_certificate_key %>;
   ssl_session_timeout  <%= @ssl_session_timeout %>;
