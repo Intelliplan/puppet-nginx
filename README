@@ -1,6 +1,7 @@
 # Nginx Recipe #
-Author	: Benoit CATTIE <puppet@benoit.cattie.net>
-Version	: 0.2
+
+Original Author	: Benoit CATTIE <puppet@benoit.cattie.net>
+Author  : Henrik Feldt (@haf), Johan Stenkvist (@neochrome)
 Licence : Apache
 
 Basic module for configuring nginx via puppet.
