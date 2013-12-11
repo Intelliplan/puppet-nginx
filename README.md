@@ -8,6 +8,19 @@ Basic module for configuring nginx via puppet.
 
 Based in part on apache2 module code by Sam Quigley <sq@wesabe.com>, Tim Stoop <tim.stoop@gmail.com> and David Schmitt <david@schmitt.edv-bus.at>
 
+## Known Bugs
+
+If you have, in a define declaration `nginx::site`, a listen directive as such:
+
+```
+    listen              => '443 ssl',
+    ssl_certificate     => 'puppet:///modules/profiles/star.intelliplan.net.pem',
+    ssl_certificate_key => 'puppet:///modules/profiles/star.intelliplan.net.key',
+```
+
+The cert 'star.intelliplan.net.pem' will be successfully moved, however, if you
+use `listen => ['443 default_server ssl', '80']` it won't be.
+
 ## Class: nginx ##
 
 Parameters (used in nginx.conf.erb) :
