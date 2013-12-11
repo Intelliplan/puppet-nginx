@@ -26,10 +26,11 @@ server {
   ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AES:RSA+3DES:!ADH:!AECDH:!MD5:!DSS;
 <% end -%>
 
-    # @location is an array with a single item; a hash; with a key for
-    # each option key.
+<%-
+  # @location is an array with a single item; a hash; with a key for
+  # each option key.
 
-<%- @locations.each do |location|
+  @locations.each do |location|
      location.sort.each do |name,options| -%>
   location <%= name %> {
   <%- options.sort.each do |option,value| -%>
