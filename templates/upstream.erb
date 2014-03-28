@@ -1,0 +1,31 @@
+# puppet-managed file, will be regenerated every puppet run
+
+upstream <%= @name %> {
+  <%- unless @balancing.empty? -%>
+  <%= @balancing %>;
+  <%- end -%>
+  <%- unless @keepalive.to_i == 0 -%>
+  keepalive <%= @keepalive %>;
+  <%- end -%>
+  <%- unless @hash.empty? -%>
+  hash <%= @hash %>;
+  <%- end -%>
+  <%- unless @hash_again.to_i == 0 -%>
+  hash_again <%= @hash_again %>;
+  <%- end -%>
+  <%- if @servers.respond_to? :each -%>
+    <%- @servers.each do |server, options| -%>
+  server <%= server %><%=
+        if options.respond_to? :map
+          opt_line = options.map{|key,value|
+            is_bool = !!value == value
+            is_bool ? key : "#{key}=#{value}"
+          }.join ' '
+          ' ' + opt_line
+        else
+          ''
+        end
+        -%>;
+    <%- end -%>
+  <%- end -%>
+}
