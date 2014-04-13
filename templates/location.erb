@@ -1,8 +1,9 @@
 # file managed by puppet
-<% if has_variable?("location_options") %>
-location <%= location %> {
-<% location_options.each do |option,value| %>
+
+<%- if @location_options -%>
+location <%= @location %> {
+<%- @location_options.each do |option, value| -%>
   <%= option %> <%= value %>;
-<% end %>
+<%- end -%>
 }
-<% end %>
+<%- end -%>

@@ -4,8 +4,8 @@
 # This definition is private, not intended to be instantiated directly
 #
 define nginx::install_site(
-  $sites_available = $nginx::params::sites_available,
-  $sites_enabled   = $nginx::params::sites_enabled,
+  $sites_available = $nginx::sites_available,
+  $sites_enabled   = $nginx::sites_enabled,
   $content         = undef,
   $source          = undef,
   $listen          = undef,
