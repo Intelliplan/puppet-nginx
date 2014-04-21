@@ -22,15 +22,15 @@ class nginx(
   $etc_dir            = '/etc/nginx',
   $log_dir            = '/var/log/nginx',
   $data_dir           = '/var/www',
-  $pid_file           = '/var/run/nginx.pid',
-  $includes_dir       = "${etc_dir}/includes",
-  $conf               = "${etc_dir}/conf.d",
-  $proxy_params       = "${includes_dir}/proxy_params",
-  $sites_enabled      = "${etc_dir}/sites-enabled",
-  $sites_available    = "${etc_dir}/sites-available"
+  $pid_file           = '/var/run/nginx.pid'
 ) {
+  $includes_dir       = "${etc_dir}/includes"
+  $conf               = "${etc_dir}/conf.d"
+  $proxy_params       = "${includes_dir}/proxy_params"
+  $sites_enabled      = "${etc_dir}/sites-enabled"
+  $sites_available    = "${etc_dir}/sites-available"
 
-  package { 'nginx': 
+  package { 'nginx':
     ensure  => latest, # http://nginx.org/en/security_advisories.html
   }
 
@@ -48,7 +48,8 @@ class nginx(
     require => Group[$group],
   }
 
-  #restart-command is a quick-fix here, until http://projects.puppetlabs.com/issues/1014 is solved
+  # restart-command is a quick-fix here, until
+  # http://projects.puppetlabs.com/issues/1014 is solved
   service { 'nginx':
     ensure     => running,
     enable     => true,
