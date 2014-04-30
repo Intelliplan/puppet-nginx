@@ -17,7 +17,7 @@
 class nginx(
   $user               = $nginx::params::user,
   $group              = $nginx::params::group,
-  $worker_processes   = $nginx::params::worker_processes, 
+  $worker_processes   = $nginx::params::worker_processes,
   $worker_connections = $nginx::params::worker_connections,
   $includes_dir       = $nginx::params::includes_dir,
   $conf               = $nginx::params::conf,
@@ -26,13 +26,14 @@ class nginx(
   $proxy_params       = $nginx::params::proxy_params,
   $data_dir           = $nginx::params::data_dir,
   $sites_enabled      = $nginx::params::sites_enabled,
+  $service_d          = $nginx::params::service_d,
   $sites_available    = $nginx::params::sites_available
 ) inherits nginx::params {
 
   anchor { 'nginx::start': }
   anchor { 'nginx::end': }
 
-  package { 'nginx': 
+  package { 'nginx':
     ensure  => latest, # http://nginx.org/en/security_advisories.html
     require => Anchor['nginx::start'],
     before  => Anchor['nginx::end'],
@@ -79,7 +80,7 @@ class nginx(
         Package['nginx'],
         Anchor['nginx::start'],
       ],
-      before => Anchor['nginx::end'];
+      before  => Anchor['nginx::end'];
 
     $conf:
       ensure  => absent,
@@ -88,7 +89,7 @@ class nginx(
         Package['nginx'],
         Anchor['nginx::start'],
       ],
-      before => Anchor['nginx::end'];
+      before  => Anchor['nginx::end'];
 
     "${etc_dir}/ssl":
       ensure  => directory,
@@ -99,7 +100,7 @@ class nginx(
         Package['nginx'],
         Anchor['nginx::start'],
       ],
-      before => Anchor['nginx::end'];
+      before  => Anchor['nginx::end'];
 
     $includes_dir:
       ensure  => directory,
@@ -110,7 +111,7 @@ class nginx(
         Package['nginx'],
         Anchor['nginx::start'],
       ],
-      before => Anchor['nginx::end'];
+      before  => Anchor['nginx::end'];
 
     "${etc_dir}/fastcgi_params":
       ensure  => absent,
@@ -118,7 +119,7 @@ class nginx(
         Package['nginx'],
         Anchor['nginx::start'],
       ],
-      before => Anchor['nginx::end'];
+      before  => Anchor['nginx::end'];
 
     $proxy_params:
       ensure  => present,
@@ -131,7 +132,7 @@ class nginx(
         Package['nginx'],
         Anchor['nginx::start'],
       ],
-      before => Anchor['nginx::end'];
+      before  => Anchor['nginx::end'];
 
     $data_dir:
       ensure  => directory,
@@ -142,9 +143,9 @@ class nginx(
         Package['nginx'],
         Anchor['nginx::start'],
       ],
-      before => Anchor['nginx::end'];
+      before  => Anchor['nginx::end'];
 
-    $log_dir: 
+    $log_dir:
       ensure  => directory,
       mode    => '0640',
       owner   => 'root',
@@ -155,15 +156,28 @@ class nginx(
       ],
       before  => Anchor['nginx::end'];
 
+    $service_d:
+      ensure  => directory,
+      mode    => '0644',
+      owner   => 'root',
+      group   => 'root',
+      recurse => true,
+      purge   => true,
+      require => [
+        Package['nginx'],
+        Anchor['nginx::start']
+      ],
+      before  => Anchor['nginx::end'];
+
     [ $sites_available , $sites_enabled ]:
-      ensure => directory,
-      mode => '0644',
-      owner => 'root',
-      group => 'root',
+      ensure  => directory,
+      mode    => '0644',
+      owner   => 'root',
+      group   => 'root',
       require => [
         Package['nginx'],
         Anchor['nginx::start'],
       ],
-      before => Anchor['nginx::end'];
+      before  => Anchor['nginx::end'];
   } # end litany of file resources
 } # end init.pp
