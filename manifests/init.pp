@@ -54,6 +54,13 @@ class nginx(
     shell   => '/sbin/nologin',
     require => Group[$group],
   }
+  file { '/var/lib/nginx/tmp/':
+    ensure => 'directory',
+    group  => '0',
+    mode   => '0755',
+    owner  => '0',
+  }
+
 
   #restart-command is a quick-fix here, until http://projects.puppetlabs.com/issues/1014 is solved
   service { 'nginx':
