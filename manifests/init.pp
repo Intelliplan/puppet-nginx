@@ -109,11 +109,11 @@ class nginx(
       mode    => '0750';
 
     $sites_available:
-      ensure  => directory
+      ensure  => directory,
       mode    => '0750';
 
     $sites_enabled:
-      ensure  => directory
+      ensure  => directory,
       mode    => '0750';
   } # end litany of file resources
 } # end init.pp
