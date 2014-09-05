@@ -24,5 +24,7 @@ http {
     server {
         return 404;
     }
-    include           <%= @sites_enabled %>/*.conf;
+
+    include            <%= @sites_enabled %>/*.conf;
+    include            <%= @service_d_dir %>/*.conf;
 }

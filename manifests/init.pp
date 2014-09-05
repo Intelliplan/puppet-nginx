@@ -7,8 +7,8 @@
 # * $worker_processes
 # * $worker_connections
 #
-# Create config directories :
-# * /etc/nginx/conf.d for http config snippet
+# Creates config directories :
+# * /etc/nginx/service.d to have a completely-puppet managed folder for services
 # * /etc/nginx/includes for sites includes
 #
 # Templates:
@@ -22,11 +22,13 @@ class nginx(
   $etc_dir            = '/etc/nginx',
   $log_dir            = '/var/log/nginx',
   $data_dir           = '/var/www',
+  $lib_dir            = '/var/lib/nginx',
   $pid_file           = '/var/run/nginx.pid'
 ) {
-  $includes_dir       = "${etc_dir}/includes"
-  $conf               = "${etc_dir}/conf.d"
   $proxy_params       = "${includes_dir}/proxy_params"
+  $service_d_dir      = "${etc_dir}/service.d"
+  $tmp_dir            = "${lib_dir}/tmp"
+  $includes_dir       = "${etc_dir}/includes"
   $sites_enabled      = "${etc_dir}/sites-enabled"
   $sites_available    = "${etc_dir}/sites-available"
 
@@ -72,18 +74,21 @@ class nginx(
       content => template('nginx/nginx.conf.erb'),
       notify  => Service['nginx'];
 
-    $conf:
-      ensure  => absent,
-      force   => true;
+    $tmp_dir:
+      ensure  => 'directory',
+      mode    => '0755';
 
     "${etc_dir}/ssl":
-      ensure  => directory;
+      ensure  => directory,
+      mode    => '0750';
 
     $includes_dir:
-      ensure  => directory;
+      ensure  => directory,
+      mode    => '0755';
 
     "${etc_dir}/fastcgi_params":
-      ensure  => absent;
+      ensure  => absent,
+      mode    => '0750';
 
     $proxy_params:
       content => template('nginx/includes/proxy_params'),
@@ -91,19 +96,25 @@ class nginx(
 
     $data_dir:
       ensure  => directory,
-      mode    => '0644',
+      mode    => '0750',
       owner   => $user,
       group   => $group;
 
     $log_dir:
       ensure  => directory,
-      mode    => '0640',
+      mode    => '0750',
       require => Package['nginx'];
 
+    $service_d_dir:
+      ensure  => directory,
+      mode    => '0750';
+
     $sites_available:
-      ensure => directory;
+      ensure  => directory
+      mode    => '0750';
 
     $sites_enabled:
-      ensure => directory;
+      ensure  => directory
+      mode    => '0750';
   } # end litany of file resources
 } # end init.pp
