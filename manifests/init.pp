@@ -102,8 +102,7 @@ class nginx(
 
     $log_dir:
       ensure  => directory,
-      mode    => '0750',
-      require => Package['nginx'];
+      mode    => '0750';
 
     $service_d_dir:
       ensure  => directory,
