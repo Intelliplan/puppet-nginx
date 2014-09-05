@@ -17,7 +17,7 @@ server {
 <% if @return -%>
   return <%= @return %>;
 <% end -%>
-<% if (@listen.respond_to?(:any) && @listen.any?{|port|port.include?('ssl')}) || @listen.include?('ssl') -%>
+<% if (@listen.respond_to?(:any) && @listen.any? { |port| port.include?('ssl') }) || @listen.include?('ssl') -%>
   ssl_certificate  <%= @ssl_certificate %>;
   ssl_certificate_key  <%= @ssl_certificate_key %>;
   ssl_session_timeout  <%= @ssl_session_timeout %>;
