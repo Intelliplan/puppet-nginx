@@ -106,7 +106,9 @@ class nginx(
 
     $service_d_dir:
       ensure  => directory,
-      mode    => '0750';
+      mode    => '0750',
+      recurse => true,
+      purge   => true;
 
     $sites_available:
       ensure  => directory,
