@@ -58,14 +58,14 @@ define nginx::site(
         ensure => file,
         owner  => 'root',
         group  => 'root',
-        mode   => '0644',
+        mode   => '0600',
         source => $ssl_certificate,
       }
       file { $ssl_certificate_key_name:
         ensure => file,
         owner  => 'root',
         group  => 'root',
-        mode   => '0644',
+        mode   => '0600',
         source => $ssl_certificate_key,
       }
 
