@@ -23,7 +23,7 @@
 #                   $max_fails    - Number of retries before server is deemed unavailable. Default: 1
 #                   $fail_timeout - period of time (in seconds) during which $max_fails happens,
 #                                   also period of time server remains unavailable after $max_fails.
-#                                   Default: 10
+#                                  Default: 10
 #                   $backup       - Marks server as backup, will only get requests when primary are
 #                                   unavailable. Default: false
 #                   $down         - Marks server as permanently unavailable. Default: false
@@ -36,8 +36,8 @@ define nginx::upstream(
   $servers         = {},
   $owner           = $nginx::user,
   $group           = $nginx::group,
-  $sites_available = $nginx::params::sites_available,
-  $sites_enabled   = $nginx::params::sites_enabled,
+  $sites_available = $nginx::sites_available,
+  $sites_enabled   = $nginx::sites_enabled,
 ) {
   $available_config = "${sites_available}/${title}.conf"
   $enabled_config   = "${sites_enabled}/${title}.conf"
