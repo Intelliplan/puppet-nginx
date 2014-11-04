@@ -23,7 +23,8 @@ class nginx(
   $log_dir            = '/var/log/nginx',
   $data_dir           = '/var/www',
   $lib_dir            = '/var/lib/nginx',
-  $pid_file           = '/var/run/nginx.pid'
+  $pid_file           = '/var/run/nginx.pid',
+  $options            = undef
 ) {
   $proxy_params       = "${includes_dir}/proxy_params"
   $service_d_dir      = "${etc_dir}/service.d"
