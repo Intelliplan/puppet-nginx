@@ -25,6 +25,16 @@ http {
         return 404;
     }
 
+    <%- if options -%>
+      <%- options.sort.each do |option,value| -%>
+        <%- if value.respond_to?(:join) -%>
+    <%= option %> <%= value.join(" ")%>;
+        <%- else -%>
+    <%= option %> <%= value %>;
+        <%- end -%>
+      <%-  end -%>
+    <%- end  -%>
+
     include            <%= @sites_enabled %>/*.conf;
     include            <%= @service_d_dir %>/*.conf;
 }
