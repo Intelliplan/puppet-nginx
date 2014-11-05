@@ -24,7 +24,7 @@ class nginx(
   $data_dir           = '/var/www',
   $lib_dir            = '/var/lib/nginx',
   $pid_file           = '/var/run/nginx.pid',
-  $options            = undef
+  $options            = {}
 ) {
   $proxy_params       = "${includes_dir}/proxy_params"
   $service_d_dir      = "${etc_dir}/service.d"
