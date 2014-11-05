@@ -25,13 +25,16 @@ http {
         return 404;
     }
 
-    <%- options.sort.each do |option,value| -%>
-        <%- if value.respond_to?(:each)  value.each do |additional_value| -%>
-            <%= option %> <%= additional_value %>;
-        <%  end
+    <%- options.each.each do |option,value| -%>
+        <%- if value.respond_to?(:each)  
+                value.each do |additional_value| -%>
+                    <%= option %> <%= additional_value %>;
+                <%  end
             else -%>
-        <%= option %> <%= value %>;
-        <%  end -%>
+            <%= option %> <%= value %>;
+            <% end %>
+    <%  end -%>
+
     include            <%= @sites_enabled %>/*.conf;
     include            <%= @service_d_dir %>/*.conf;
 }
