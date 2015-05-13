@@ -34,7 +34,8 @@ class nginx(
   $sites_available    = "${etc_dir}/sites-available"
 
   package { 'nginx':
-    ensure  => latest, # http://nginx.org/en/security_advisories.html
+    # locking it down while we upgrade the nginx
+    ensure  => '1.5.12-3', # http://nginx.org/en/security_advisories.html
   }
 
   group { $group:
