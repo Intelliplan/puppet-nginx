@@ -35,7 +35,7 @@ class nginx(
 
   package { 'nginx':
     # locking it down while we upgrade the nginx
-    ensure  => '1.5.12-3', # http://nginx.org/en/security_advisories.html
+    ensure  => latest, # http://nginx.org/en/security_advisories.html
   }
 
   group { $group:
