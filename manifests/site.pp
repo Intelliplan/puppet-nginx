@@ -44,7 +44,7 @@ define nginx::site(
     default => $access_log,
   }
 
-  if straryinclude($listen, '443') and  $ensure == 'present'{
+  if straryinclude($listen, 'ssl') and  $ensure == 'present'{
     $ssl_certificate_name = "${etc_dir}/ssl/${name}.pem"
     $ssl_certificate_key_name = "${etc_dir}/ssl/${name}.key"
     # Autogenerating ssl certs
