@@ -21,7 +21,7 @@ define nginx::site(
   $source              = undef,
   $root                = undef,
   $ensure              = 'present',
-  $include             = '',
+  $include             = undef,
   $listen              = '80',
   $server_name         = undef,
   $access_log          = undef,
@@ -86,6 +86,7 @@ define nginx::site(
         ssl_session_timeout => $ssl_session_timeout,
         root                => $root,
         locations           => $locations,
+        include             => $include
       }
     }
     'absent' : {

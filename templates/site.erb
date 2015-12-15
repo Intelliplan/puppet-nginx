@@ -8,6 +8,9 @@ server {
    else -%>
   listen <%= @listen %>;
 <% end -%>
+<% if @include -%>
+  include <%= @include %>;
+<% end -%>
 <% if @server_name -%>
   server_name <%= @server_name %>;
 <% end -%>

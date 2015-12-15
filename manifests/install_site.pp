@@ -15,6 +15,7 @@ define nginx::install_site(
   $ssl_session_timeout = undef,
   $root            = undef,
   $locations       = undef,
+  $include         = undef,
 ) {
   $user = $nginx::user
   $group = $nginx::group
