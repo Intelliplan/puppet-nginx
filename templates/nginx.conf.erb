@@ -2,6 +2,7 @@ user                  <%= @user %>;
 worker_processes      <%= @worker_processes %>;
 error_log             <%= @log_dir %>/error.log;
 pid                   <%= @pid_file %>;
+worker_rlimit_nofile  30000;
 
 events {
     worker_connections <%= @worker_connections %>;
